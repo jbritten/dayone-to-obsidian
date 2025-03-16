@@ -132,3 +132,17 @@ class EntryProcessor:
         # Apply max length after all other processing
         return title[:EntryProcessor.max_filename_length]
 
+    @staticmethod
+    def convert_dayone_links(text, entry_dict):
+        """Convert Day One internal links to Obsidian Wikilinks."""
+        def replace_link(match):
+            entry_id = match.group(2)
+            if entry_id in entry_dict:
+                entry = entry_dict[entry_id]
+                title = EntryProcessor.get_title(entry)
+                return f"[[{title}]]"
+            return match.group(0)  # Return original if entry not found
+            
+        pattern = r'\[([^\]]+)\]\(dayone:\/\/view\?entryId=([A-F0-9]+)\)'
+        return re.sub(pattern, replace_link, text)
+

@@ -88,6 +88,12 @@ with open(fn, encoding='utf-8') as json_file:
     video_processor = VideoEntryProcessor()
     pdf_processor = PdfEntryProcessor()
 
+    # Create a dictionary of all entries for link conversion
+    entries_dict = {}
+    for entry in data['entries']:
+        if 'uuid' in entry:
+            entries_dict[entry['uuid']] = entry
+
     for entry in data['entries']:
         newEntry = []
 
@@ -143,6 +149,9 @@ with open(fn, encoding='utf-8') as json_file:
                 newText = DEFAULT_TEXT
             newText = newText.replace("\u2028", "\n")
             newText = newText.replace("\u1C6A", "\n\n")
+
+            # Convert Day One internal links to Obsidian Wikilinks
+            newText = EntryProcessor.convert_dayone_links(newText, entries_dict)
 
             if 'photos' in entry:
                 # Correct photo links. First we need to rename them. The filename is the md5 code, not the identifier
