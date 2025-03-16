@@ -8,6 +8,8 @@ import shutil
 import time
 import json
 import re
+import subprocess
+import platform
 
 from processor.AudioEntryProcessor import AudioEntryProcessor
 from processor.EntryProcessor import EntryProcessor
@@ -23,6 +25,24 @@ def rename_media(root, subpath, media_entry, filetype):
         newfn = os.path.join(root, subpath, '%s.%s' % (media_entry['identifier'], filetype))
         print('Renaming %s to %s' % (pfn, newfn))
         os.rename(pfn, newfn)
+
+
+def iso_to_timestamp(iso_date_str):
+    """Convert ISO format date string to Unix timestamp."""
+    if not iso_date_str:
+        return None
+    dt = dateutil.parser.isoparse(iso_date_str)
+    return dt.timestamp()
+
+
+def set_creation_date_macos(filepath, creation_date):
+    """Set the creation date of a file on macOS using setfile command."""
+    try:
+        # Convert timestamp to the format setfile expects: MM/DD/YYYY HH:MM:SS
+        date_str = time.strftime("%m/%d/%Y %H:%M:%S", time.localtime(creation_date))
+        subprocess.run(['setfile', '-d', date_str, filepath], check=True)
+    except (subprocess.SubprocessError, FileNotFoundError) as e:
+        print(f"Warning: Could not set creation date for {filepath}: {str(e)}")
 
 
 # Load the configuration
@@ -216,6 +236,17 @@ with open(fn, encoding='utf-8') as json_file:
         with open(fnNew, 'w', encoding='utf-8') as f:
             for line in newEntry:
                 f.write(line)
+        
+        # Set file timestamps based on creation and modification dates
+        creation_ts = iso_to_timestamp(entry['creationDate'])
+        modified_ts = iso_to_timestamp(entry.get('modifiedDate', entry['creationDate']))
+        
+        # Set modification and access times
+        os.utime(fnNew, (creation_ts, modified_ts))
+        
+        # On macOS, also set the creation time
+        if platform.system() == 'Darwin':  # Check if we're on macOS
+            set_creation_date_macos(fnNew, creation_ts)
 
         count += 1
 
