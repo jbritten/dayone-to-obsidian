@@ -82,7 +82,11 @@ with open(fn, encoding='utf-8') as json_file:
         coordinates = ''
 
         frontmatter = f"---\n" \
-                      f"date: {dateCreated}\n"
+                      f"date: {dateCreated}\n" \
+                      f"created: {entry['creationDate']}\n"
+
+        if 'modifiedDate' in entry:
+            frontmatter += f"modified: {entry['modifiedDate']}\n"
 
         weather = EntryProcessor.get_weather(entry)
         if len(weather) > 0:
