@@ -79,6 +79,7 @@ with open(fn, encoding='utf-8') as json_file:
 
         frontmatter = f"---\n" \
                       f"date: {localDate.strftime("%Y-%m-%d")}\n" \
+                      f"time: {localDate.strftime("%Y-%m-%dT%H:%M:%S")}\n" \
                       f"created: {entry['creationDate']}\n"
 
         if 'modifiedDate' in entry:
