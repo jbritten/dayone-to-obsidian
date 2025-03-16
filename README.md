@@ -33,9 +33,16 @@ This is an example entry with a lot of text and media.
 filename: Hello Obsidian 2018-01-02
 ```markdown
 ---
-date: 2018-01-02 18:58:49 Tuesday
+date: 2019-11-22
+time: 2019-11-22T10:51:19
+created: 2019-11-22T15:51:19Z
+modified: 2020-01-14T18:29:00Z
 weather: City 13°C Mostly Cloudy
-tags: From/DayOne, DayOne/Audio
+tags: From/DayOne
+latitude: 40.74844205
+longitude: -73.9856589016075
+country: United States of America
+city: New York City
 locations: 
 ---
 # Hello Obsidian
