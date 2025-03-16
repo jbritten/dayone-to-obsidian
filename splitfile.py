@@ -93,6 +93,8 @@ with open(fn, encoding='utf-8') as json_file:
 
         if 'location' in entry:
             coordinates = EntryProcessor.get_coordinates(entry)
+            frontmatter += f"latitude: {entry['location']['latitude']}\n"
+            frontmatter += f"longitude: {entry['location']['longitude']}\n"
 
         frontmatter += "locations: \n"
         frontmatter += "---\n"
