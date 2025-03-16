@@ -2,11 +2,11 @@
 # Set this as the location where your Journal.json file is located
 # Use single quotes to preserve the path as is
 # The path can contain spaces
-ROOT: '/Users/jbritten/Downloads/03-16-2025_4-04-PM-Business'
+ROOT: '/path/to/day one journals'
 
 # name of folder where journal entries will end up
-JOURNAL_FOLDER: "Business"
-JOURNAL_JSON: "Business.json"
+JOURNAL_FOLDER: "Journal"
+JOURNAL_JSON: "Journal.json"
 
 # All fields below are optional. Set them to "" or remove them if not needed.
 
@@ -21,9 +21,12 @@ DEFAULT_TEXT: "Empty day one entry. Keep it for record.\n"
 # This will append DayOne/ as part of the tag name for sub-tags
 # i.e. instead of #entry, it is #DayOne/entry. To exclude set to "".
 # If you change DayOne to something else, make sure you keep the trailing /
-TAG_PREFIX: ""
+TAG_PREFIX: "DayOne/"
 
 # I like to keep this tag in addition to other tags from entries
 # To exclude just remove it
 ADDITIONAL_TAGS:
   - "From/DayOne"
+
+# Whether to organize files in year/year-month folders (true) or keep them all in JOURNAL_FOLDER (false)
+USE_DATE_FOLDERS: true

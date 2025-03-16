@@ -208,30 +208,41 @@ with open(fn, encoding='utf-8') as json_file:
         # except KeyError:
         #     pass
 
-        # Save entries organised by year, year-month, year-month-day.md
-        yearDir = os.path.join(journalFolder, str(createDate.year))
-        monthDir = os.path.join(yearDir, createDate.strftime('%Y-%m'))
-
-        if not os.path.isdir(yearDir):
-            os.mkdir(yearDir)
-
-        if not os.path.isdir(monthDir):
-            os.mkdir(monthDir)
-
+        # Save entries based on configuration
+        use_date_folders = Config.get("USE_DATE_FOLDERS", True)  # Default to True for backward compatibility
         title = EntryProcessor.get_title(entry)
+        date_str = localDate.strftime('%Y-%m-%d')
 
-        # Filename format: "title localDate"
-        # Target filename to save to. Will be modified if already exists
-        fnNew = os.path.join(monthDir, "%s %s.md" % (title, localDate.strftime('%Y-%m-%d')))
+        if use_date_folders:
+            # Save entries organised by year, year-month folders
+            yearDir = os.path.join(journalFolder, str(createDate.year))
+            monthDir = os.path.join(yearDir, createDate.strftime('%Y-%m'))
 
-        # Here is where we handle multiple entries on the same day. Each goes to it's own file
+            if not os.path.isdir(yearDir):
+                os.mkdir(yearDir)
+
+            if not os.path.isdir(monthDir):
+                os.mkdir(monthDir)
+            
+            target_dir = monthDir
+        else:
+            # Save all entries directly in journal folder
+            target_dir = journalFolder
+
+        # First try with just the title
+        fnNew = os.path.join(target_dir, f"{title}.md")
+
+        # If file exists, append the date
         if os.path.isfile(fnNew):
-            # File exists, need to find the next in sequence and append alpha character marker
-            index = 97  # ASCII a
-            fnNew = os.path.join(monthDir, "%s %s %s.md" % (title, localDate.strftime('%Y-%m-%d'), chr(index)))
-            while os.path.isfile(fnNew):
-                index += 1
-                fnNew = os.path.join(monthDir, "%s %s %s.md" % (title, localDate.strftime('%Y-%m-%d'), chr(index)))
+            fnNew = os.path.join(target_dir, f"{title} {date_str}.md")
+
+            # If that still exists, start appending letters
+            if os.path.isfile(fnNew):
+                index = 97  # ASCII a
+                fnNew = os.path.join(target_dir, f"{title} {date_str} {chr(index)}.md")
+                while os.path.isfile(fnNew):
+                    index += 1
+                    fnNew = os.path.join(target_dir, f"{title} {date_str} {chr(index)}.md")
 
         with open(fnNew, 'w', encoding='utf-8') as f:
             for line in newEntry:
