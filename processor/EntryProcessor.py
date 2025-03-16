@@ -105,29 +105,30 @@ class EntryProcessor:
 
     @staticmethod
     def get_title(entry):
-
         if 'text' not in entry:
             return EntryProcessor.default_filename
 
         entry_text = entry['text']
+        
         # Split the text into lines
-        lines = entry_text.split("\n")
-
+        lines = entry_text.split('\n')
+        
         # Find the first line that doesn't start with ![]
-        entry_title = None
-        for t_line in lines:
-            if len(t_line) > 0 and not re.match(r"!\[\]", t_line):
-                entry_title = t_line
+        first_non_image_line = None
+        for line in lines:
+            if len(line) > 0 and not re.match(r"!\[\]", line):
+                first_non_image_line = line
                 break
-        if entry_title is None or len(entry_title) == 0:
-            entry_title = EntryProcessor.default_filename
+                
+        if first_non_image_line is None or len(first_non_image_line.strip()) == 0:
+            return EntryProcessor.default_filename
 
-        # Remove all markdown headers
-        entry_title = re.sub(r"^#+\s*", "", entry_title.strip())
+        # Remove markdown headers
+        title = re.sub(r"^#+\s*", "", first_non_image_line.strip())
 
         # Replace disallowed characters with spaces
-        filename = re.sub(r'[\\/:\*\?"<>|#^\[\]]', ' ', entry_title).strip()
+        title = re.sub(r'[\\/:\*\?"<>|#^\[\]]', ' ', title).strip()
 
-        # filename max length
-        return filename[:EntryProcessor.max_filename_length]
+        # Apply max length after all other processing
+        return title[:EntryProcessor.max_filename_length]
 
