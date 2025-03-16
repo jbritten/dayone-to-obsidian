@@ -75,14 +75,10 @@ with open(fn, encoding='utf-8') as json_file:
         localDate = createDate.astimezone(
             pytz.timezone(entry['timeZone']))  # It's natural to use our local date/time as reference point, not UTC
 
-        # Format the date and time with the weekday
-        formatted_datetime = createDate.strftime("%Y-%m-%d %H:%M:%S %A")
-
-        dateCreated = formatted_datetime
         coordinates = ''
 
         frontmatter = f"---\n" \
-                      f"date: {dateCreated}\n" \
+                      f"date: {localDate.strftime("%Y-%m-%d")}\n" \
                       f"created: {entry['creationDate']}\n"
 
         if 'modifiedDate' in entry:
