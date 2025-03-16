@@ -30,3 +30,6 @@ ADDITIONAL_TAGS:
 
 # Whether to organize files in year/year-month folders (true) or keep them all in JOURNAL_FOLDER (false)
 USE_DATE_FOLDERS: true
+
+# Maximum length for generated filenames. Default is 30 characters.
+MAX_FILENAME_LENGTH: 30

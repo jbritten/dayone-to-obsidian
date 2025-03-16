@@ -7,12 +7,14 @@ class EntryProcessor:
     additional_tags = []
     tag_prefix = ""
     default_filename = ""
+    max_filename_length = 30  # Default value
 
     @classmethod
     def initialize(cls):
         cls.additional_tags = Config.get("ADDITIONAL_TAGS", [])
         cls.tag_prefix = Config.get("TAG_PREFIX", "")
         cls.default_filename = Config.get("DEFAULT_FILENAME", "")
+        cls.max_filename_length = Config.get("MAX_FILENAME_LENGTH", 30)
 
     def __init__(self):
         self.entry_dict = {}  # Initialize dict in the constructor
@@ -127,5 +129,5 @@ class EntryProcessor:
         filename = re.sub(r'[\\/:\*\?"<>|#^\[\]]', ' ', entry_title).strip()
 
         # filename max length
-        return filename[:30]
+        return filename[:EntryProcessor.max_filename_length]
 
